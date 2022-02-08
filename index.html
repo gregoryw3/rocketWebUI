@@ -16,13 +16,16 @@
     <h2></h2>
     <div id="map" class="map"></div>
     <script type="text/javascript">
+      var newLayer = new ol.layer.Tile({
+        source: new ol.sorce.OSM({
+                url: 'maps/{z}/{x}/{y}.png'
+        })
+      })
+      
       var map = new ol.Map({
         target: 'map',
         layers: [
-          new ol.layer.Tile({
-            source: new ol.source.OSM(),
-            url: "~/Downloads/virginia.osm"
-          })
+          newLayer
         ],
         view: new ol.View({
           // center: ol.proj.fromLonLat([ -77.450331, 37.548199]),
