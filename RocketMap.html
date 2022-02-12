@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/css/ol.css" type="text/css">
+    <style>
+      .map {
+        height: 750px;
+        width: 45%;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/build/ol.js"></script>
+    <title>Rocket Test UI version: 0.1a</title>
+  </head>
+  <body>
+    <h2></h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+      var newLayer = new ol.layer.Tile({
+        source: new ol.sorce.OSM()({
+                //url: 'maps/{z}/{x}/{y}.png'
+        })
+      })
+
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          newLayer
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([ -77.450331, 37.548199]),
+          zoom: 9
+        })
+      });
+    </script>
+
+    <
+  </body>
+</html>

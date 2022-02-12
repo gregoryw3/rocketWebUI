@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dimensional Charting</title>
+      <link integrity="" crossorigin="anonymous" rel="stylesheet" type="text/css" href="http://dc-js.github.io/dc.js/css/dc.css"/>
+        <script integrity="" crossorigin="anonymous" type="text/javascript" src="http://dc-js.github.io/dc.js/js/d3.js"></script>
+        <script integrity="" crossorigin="anonymous" type="text/javascript" src="http://dc-js.github.io/dc.js/js/crossfilter.js"></script>
+        <script integrity="" crossorigin="anonymous" type="text/javascript" src="http://dc-js.github.io/dc.js/js/dc.js"></script>
+</head>
+
+<body>
+
+<div id="rocket-height-line-chart"></div>
+
+<script type="text/javascript">
+    var rocketHeightChart = dc.lineChart("#rocket-height-line-chart")
+    var connection = new WebSocket('ws://localhost:8001/websocket')
+    var data1 = [
+        {Time: 0, Height: 0}
+    ];
+    // set crossfilter with first dataset
+    var xfilter = crossfilter(data1),
+        timeDim  = xfilter.dimension(function(d) {return +d.Time;}),
+        heightDim = xfilter.dimension(function(d) {return +d.Height;})
+
+        heightPerTime = timeDim.group().reduceSum(function(d) {return +d.Height;});
+    function render_plots(){
+        rocketHeightChart
+            .width(500)
+            .height(500)
+            .x(d3.scaleLinear().range(d3.schemeCategory10))
+            .y(d3.scaleLinear().range(d3.schemeCategory10))
+            .brushOn(false)
+            .xAxisLabel("Time (s)")
+            .yAxisLabel("Height (ft)")
+            .dimension(timeDim)
+            .group(heightPerTime)
+            .elasticX(true)
+            .elasticY(true)
+            
+            
+        dc.renderAll();
+    }
+    render_plots();
+    // data reset function (adapted)
+    function resetData(ndx, dimensions) {
+        var rocketHeightFilters = rocketHeightChart.filters();
+        rocketHeightChart.filter(null);
+        xfilter.remove();
+        rocketHeightChart.filter([rocketHeightFilters]);
+    }
+    connection.onmessage = function(event) {
+        var newData = JSON.parse(event.data);
+        var updateObject =[{
+            "Time": newData.Time,
+            "Height": newData.Height
+        }]
+        //resetData(ndx, [yearDim, spendDim, nameDim]);
+        xfilter.add(updateObject);
+        dc.redrawAll();
+    }
+</script>
+
+</body>
+
+</html>
