@@ -7,6 +7,8 @@ from tornado import websocket, web, ioloop
 from datetime import timedelta
 from random import randint
 
+import tornado
+
 
 
 class WebSocketHandler(websocket.WebSocketHandler):
@@ -15,12 +17,24 @@ class WebSocketHandler(websocket.WebSocketHandler):
   def check_origin(self, origin):
     return True
 
+  continueGoing = True
+
   #on open of this socket
   def open(self):
     print ('Connection established.')
     #ioloop to wait for 3 seconds before starting to send data
-    startTime = time.time()
-    ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=3), self.send_data(startTime))
+
+  def on_message(self, message):
+    jsonMessage = json.loads(message)
+    print (jsonMessage)
+    if jsonMessage.get('run') == 'true':
+      startTime = time.time()
+      ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=3), self.send_data(startTime))
+    if jsonMessage.get('run') == 'false':
+      global continueGoing
+      continueGoing = False
+      ioloop.IOLoop.instance().stop()
+    
 
  #close connection
   def on_close(self):
@@ -33,9 +47,9 @@ class WebSocketHandler(websocket.WebSocketHandler):
   # Our function to send new (random) data for charts
   def send_data(self, startTime):
     print ("Sending Data")
+
     #create a bunch of random data for various dimensions we want
-    #currentTime = time.time()
-    currentHeight = random.randrange(10,1500)
+    currentHeight = random.randrange(1, 5)
 
     #create a new data point
     point_data = {
@@ -59,4 +73,9 @@ if __name__ == "__main__":
   application = web.Application([(r'/static/(.*)', web.StaticFileHandler, {'path': os.path.dirname(__file__)}),
                                  (r'/websocket', WebSocketHandler)])
   application.listen(8001)
-  ioloop.IOLoop.instance().start()
+#TODO Fix ContinuGoing/ Start and Stop Buttons
+  global continueGoing
+
+
+  if (continueGoing):
+    ioloop.IOLoop.instance().start()

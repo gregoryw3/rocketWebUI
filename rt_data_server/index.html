@@ -13,9 +13,60 @@
 
 <div id="rocket-height-line-chart"></div>
 
+<form>
+    <input type="button" id="startRecordingButton" onclick="startRecording();" value="Start"/>
+    <input type="button" id="stopRecordingButton" onclick="stopRecording();" value="Stop"/>
+</form>
+
 <script type="text/javascript">
     var rocketHeightChart = dc.lineChart("#rocket-height-line-chart")
     var connection = new WebSocket('ws://localhost:8001/websocket')
+
+    function isOpen(ws) {
+        return ws.readyState === ws.OPEN
+    }
+
+    waitChain()
+
+    function waitChain() {
+        var msg = {
+            wait: "true"
+        }
+        if (!isOpen(connection)) {
+            console.log("Socket is Closed!")
+            return;
+        }
+        connection.send(JSON.stringify(msg));
+    }
+    
+
+    function startRecording() {
+        var msg = {
+            run: "true",
+            date: Date.now()
+        }
+        if (!isOpen(connection)) {
+            console.log("Socket is Closed!")
+            return;
+        }
+        connection.send(JSON.stringify(msg));
+    }
+
+    function stopRecording() {
+        var msg = {
+            run: "false",
+            date: Date.now()
+        }
+        if (!isOpen(connection)) {
+            console.log("Socket is Closed!")
+            return;
+        }
+        connection.send(JSON.stringify(msg));
+        resetData();
+
+        
+    }
+
     var data1 = [
         {Time: 0, Height: 0}
     ];
@@ -37,9 +88,7 @@
             .dimension(timeDim)
             .group(heightPerTime)
             .elasticX(true)
-            .elasticY(true)
-            
-            
+            .elasticY(true)        
         dc.renderAll();
     }
     render_plots();
