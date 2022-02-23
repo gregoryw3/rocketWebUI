@@ -1,0 +1,68 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
+  html{
+    background-color:rgb(255, 255, 255);
+  }
+.allCharts {
+    margin: 0px auto;
+    background-color:rgb(255, 255, 255);
+    display: grid;
+    grid-template-columns: 1000px 1000px;
+    grid-row: auto auto;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+.rocketCharts{
+    margin: 0px auto;
+    /* 
+    width:1000px;
+    height:95%;
+    */
+    background-color:rgb(255, 255, 255);
+    display: grid;
+    grid-template-columns: 500px 500px;
+    grid-row: auto auto;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+}
+    .rocket-height-line-chart{
+        padding: 0px;
+        border-radius:0px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .rocket-air-pressure-line-chart{
+        padding: 0px;
+        border-radius:0px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .rocket-humidity-line-chart{
+        padding: 0px;
+        border-radius:0px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .rocket-temperature-line-chart{
+        padding: 0px;
+        border-radius:0px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        }
+    .rocket-gps-map-chart {
+        padding: 0px;
+        border-radius:0px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        }
