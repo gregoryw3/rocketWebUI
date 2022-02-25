@@ -7,7 +7,6 @@ import os
 from tornado import websocket, web, ioloop
 from datetime import timedelta
 from random import randint
-
 import tornado
 
 class WebSocketHandler(websocket.WebSocketHandler):

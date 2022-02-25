@@ -6,6 +6,9 @@
   html{
     background-color:rgb(255, 255, 255);
   }
+.websocket-status{
+    color: black;
+}
 .allCharts {
     margin: 0px auto;
     background-color:rgb(255, 255, 255);
