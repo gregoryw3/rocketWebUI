@@ -193,13 +193,21 @@ function getCSV() {
     var blob = new Blob(["\ufeff", csv]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    var currentTime = Date.now();
-    downloadLink.download = "data.csv";
+    downloadLink.download = getFormattedTime() +'.csv';
     
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+}
 
-var encodedUri = encodeURI(csv);
-window.open(encodedUri);
+function getFormattedTime() {
+    var today = new Date();
+    var y = today.getFullYear();
+    // JavaScript months are 0-based.
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    var h = today.getHours();
+    var mi = today.getMinutes();
+    var s = today.getSeconds();
+    return y + "-" + m + "-" + d + "-" + h + "-" + mi + "-" + s;
 }
