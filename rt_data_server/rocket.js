@@ -4,6 +4,7 @@ var rocketHumidityChart = dc.lineChart("#rocket-humidity-line-chart")
 var rocketTemperatureChart = dc.lineChart("#rocket-temperature-line-chart")
 var connection = new WebSocket('ws://localhost:8001/websocket')
 
+var currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0}]}';
 
 function isOpen(ws) {
     return ws.readyState === ws.OPEN
@@ -169,21 +170,36 @@ connection.onmessage = function(event) {
         "Humidity": newData.Humidity,
         "Temperature": newData.Temperature
     }]
+
+    var objCurrentData = JSON.parse(currentData);
+    objCurrentData['rocketData'].push({"Time": newData.Time, "Height": newData.Height, "AirPressure": newData.AirPressure, "Humidity": newData.Humidity, "Temperature": newData.Temperature});
+    currentData = JSON.stringify(objCurrentData);
+
     //resetData(1, [timeDim, heightDim, airPressureDim, humidityDim, temperatureDim]);
     xfilter.add(updateObject);
     dc.redrawAll();
 }
 
 function getCSV() {
-const items = dc
-const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
-const header = Object.keys(items[0])
-const csv = [
-    header.join(','), // header row first
-    ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+    const items = JSON.parse(currentData).rocketData
+    const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+    const header = Object.keys(items[0])
+    const csv = [
+      header.join(','), // header row first
+      ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
     ].join('\r\n')
+    
+    var downloadLink = document.createElement("a");
+    var blob = new Blob(["\ufeff", csv]);
+    var url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    var currentTime = Date.now();
+    downloadLink.download = "data.csv";
+    
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 
-console.log(csv)
 var encodedUri = encodeURI(csv);
 window.open(encodedUri);
 }
