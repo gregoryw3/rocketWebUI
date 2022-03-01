@@ -6,12 +6,14 @@ var connection = new WebSocket('ws://localhost:8001/websocket')
 
 var currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0}]}';
 
+//Returns if webSocket connection is open
 function isOpen(ws) {
     return ws.readyState === ws.OPEN
 }
 
 waitChain()
 
+//TODO Doesn't work right, is supposed to update to Open Green once webSocket connects
 function waitChain() {
     var msg = {
         wait: "true"
@@ -29,7 +31,7 @@ function waitChain() {
     connection.send(JSON.stringify(msg));
 }
 
-
+//Sends json over webSocket to websocket_server.py which initiates the tornado loop
 function startRecording() {
     var msg = {
         run: "true",
@@ -48,6 +50,7 @@ function startRecording() {
     connection.send(JSON.stringify(msg));
 }
 
+//TODO Doesn't work correctly
 function stopRecording() {
     var msg = {
         run: "false",
@@ -66,19 +69,24 @@ function stopRecording() {
     connection.send(JSON.stringify(msg));
 }
 
+//resets chart data by calling the resetData() function and then reinitializes the csv json data to it's
+//initial state
 function resetRecording() {
     resetData(1, [timeDim, heightDim, airPressureDim, humidityDim, temperatureDim]);
     currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0}]}';
 }
 
+//this is here to make it easier to add more things to this function if needed
 function saveRecording() {
     getCSV()
 }
 
+//initial json graph variable
 var data1 = [
     {Time: 0, Height: 0, AirPressure: 0, Humidity: 0, Temperature: 0}
 ];
-// set crossfilter with first dataset
+
+// set crossfilter with first dataset; time
 var xfilter = crossfilter(data1),
     timeDim  = xfilter.dimension(function(d) {return +d.Time;}),
     heightDim = xfilter.dimension(function(d) {return +d.Height;})
@@ -90,6 +98,8 @@ var xfilter = crossfilter(data1),
     airPressurePerTime = timeDim.group().reduceSum(function(d) {return +d.AirPressure;});
     humidityPerTime = timeDim.group().reduceSum(function(d) {return +d.Humidity;});
     temperaturePerTime = timeDim.group().reduceSum(function(d) {return +d.Temperature;});
+
+//creates and sets the graph properties
 function render_plots(){
     rocketHeightChart
         .width(425)
@@ -143,7 +153,9 @@ function render_plots(){
     dc.renderAll();
 }
 render_plots();
+
 // data reset function (adapted)
+// I don't know what ndx is for or means; is currently not used
 function resetData(ndx, dimensions) {
     var rocketHeightFilters = rocketHeightChart.filters();
     var rocketAirPressureFilters = rocketAirPressureChart.filters();
@@ -162,6 +174,8 @@ function resetData(ndx, dimensions) {
     rocketHumidityChart.filter([rocketHumidityFilters])
     rocketTemperatureChart.filter([rocketTemperatureFilters])
 }
+
+//updates the js object for the graphs with data that is sent from the webSocket
 connection.onmessage = function(event) {
     var newData = JSON.parse(event.data);
     var updateObject =[{
@@ -181,6 +195,8 @@ connection.onmessage = function(event) {
     dc.redrawAll();
 }
 
+//Parses the currentData as a js object then converts the object to a csv json formatted then calls getFormattedTime() and sets that
+//as the download file name
 function getCSV() {
     const items = JSON.parse(currentData).rocketData
     const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
@@ -201,6 +217,7 @@ function getCSV() {
     document.body.removeChild(downloadLink);
 }
 
+//Gets time and date as: 2022-3-1-13-17-29
 function getFormattedTime() {
     var today = new Date();
     var y = today.getFullYear();
