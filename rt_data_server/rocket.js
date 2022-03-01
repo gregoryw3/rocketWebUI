@@ -68,6 +68,7 @@ function stopRecording() {
 
 function resetRecording() {
     resetData(1, [timeDim, heightDim, airPressureDim, humidityDim, temperatureDim]);
+    currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0}]}';
 }
 
 function saveRecording() {
