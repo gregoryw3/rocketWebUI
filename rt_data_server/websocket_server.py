@@ -1,13 +1,12 @@
-from glob import glob
-import time
-import random
-import json
 import datetime
+import json
 import os
-from tornado import websocket, web, ioloop
-from datetime import timedelta
-from random import randint
-import tornado
+import random
+import time
+from glob import glob
+
+from tornado import ioloop, web, websocket
+
 
 class WebSocketHandler(websocket.WebSocketHandler):
   # Addition for Tornado as of 2017, need the following method
