@@ -6,6 +6,7 @@ from digi.xbee.devices import XBeeDevice
 # In UNIX-based systems, the port usually starts with /dev/tty.
 #
 # Instantiate a local XBee object.
+# Port and Baude Rate
 xbee = XBeeDevice("COM1", 9600)
 
 
