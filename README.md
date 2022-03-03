@@ -1,43 +1,41 @@
-<<<<<<< HEAD
-# rocketWebUI
-
-Web UI for Rocket
+# rocketWebUI and rocketXbeeConnection
 
 Uses Python and JavaScript to procces data and chart in real time.
 
-## How to Use
+## rocketWebUI
+
+### How to use
 
 Start Python webserver:
-```
+
+```python
 python3 -m http.server:3000
 ```
 
 Start Python script:
-```
+
+```python
 python3 websocket_server.py
 ```
 
-## Libraries and other resources used
+### Libraries and other resources used
 
-### Python
+#### Python
+
 - tornado
 
-### JavaScript
+#### JavaScript
+
 - d3.js
 - dc.js
 - crossfilter.js
-=======
-# rocketXbeeConnection
 
-## rocketXbeeClient
+## rocketXbeeConnection
 
-rocketXbeeClient is the ground station laptop and will mainly be receving data from the rocket xbee radio.
+- ### rocketXbeeClient
 
-## rocketXbeeServer
+  - rocketXbeeClient is the ground station laptop and will mainly be receving data from the rocket xbee radio.
 
-rocketXbeeServer is the rocket xbee radio and will mainly be sending data to the ground station.
+- ### rocketXbeeServer
 
-### To be used in combination with
-
-<https://github.com/gregoryw3/rocketWebUI>
->>>>>>> rocketXbeeConnection/main
+  - rocketXbeeServer is the rocket xbee radio and will mainly be sending data to the ground station.
