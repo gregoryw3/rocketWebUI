@@ -2,7 +2,7 @@
 
 ## rocketXbeeClient
 
-rocketXbeeClient is the ground station laptop and will mainly be solley receving data from the rocket xbee radio.
+rocketXbeeClient is the ground station laptop and will mainly be receving data from the rocket xbee radio.
 
 ## rocketXbeeServer
 
