@@ -61,12 +61,17 @@ bus.write_i2c_block_data(i2c_address, reg_config, val)
 # Read CONFIG to verify that we changed it
 val = bus.read_i2c_block_data(i2c_address, reg_config, 2)
 print("New CONFIG:", val)
-while True:
+
+def main():
     received_data = ser.read()              #read serial port
     sleep(0.03)
     data_left = ser.inWaiting()             #check for remaining byte
     received_data += ser.read(data_left)
     print (received_data)                   #print received data
+    
     temperature = read_temp()
     print(round(temperature, 2), "C")
     sleep(1)
+
+if __name__ == "__main__":
+    main()
