@@ -7,7 +7,7 @@ from digi.xbee.devices import ZigBeeDevice
 # In UNIX-based systems, the port usually starts with /dev/tty.
 
 #Port and Baude Rate
-xbee = ZigBeeDevice("COM1", 9600)
+xbee = ZigBeeDevice("/dev/ttyAMA0", 9600)
 
 currentData = 0
 
