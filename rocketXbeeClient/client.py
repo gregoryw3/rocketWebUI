@@ -7,7 +7,7 @@ from digi.xbee.devices import XBeeDevice
 #
 # Instantiate a local XBee object.
 # Port and Baude Rate
-xbee = XBeeDevice("COM1", 9600)
+xbee = XBeeDevice("/dev/tty.usbserial-DA01HY9O", 9600)
 
 
 #The default timeout to wait for the send status is two seconds. 
