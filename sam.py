@@ -23,7 +23,7 @@ def main():
    # gps = adafruit_gps.GPS_GtopI2C(i2c,debug=False)
    # gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
    # gps.send_command(b"PMTK220,1000")
-    radio =  XBeeDevice("port",57600)
+    radio =  XBeeDevice("/dev/ttyAMA0",57600)
     data = bytearray()
     bmp = adafruit_bmp3xx.BMP3XX_I2C(i2c)
     #sht = adafruit_sht31d.SHT31D(i2c)
