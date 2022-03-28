@@ -9,7 +9,7 @@ from digi.xbee.devices import ZigBeeDevice
 #Port and Baude Rate
 xbee = ZigBeeDevice("/dev/ttyAMA0", 57600)
 
-currentData = 0
+currentData = "test"
 
 try:
     xbee.open()
