@@ -4,6 +4,8 @@ import os
 import random
 import time
 from glob import glob
+from multiprocessing import Pipe, Process, Queue
+from client import send_to_web
 
 from tornado import ioloop, web, websocket
 
@@ -67,7 +69,13 @@ class WebSocketHandler(websocket.WebSocketHandler):
 if __name__ == "__main__":
   #create new web app w/ websocket endpoint available at /websocket
   print ("Starting websocket server program. Awaiting client requests to open websocket ...")
+
+  parent_conn,child_conn = Pipe()
+  p = Process(target=send_to_web, args=(child_conn,))
+  p.start()
+  print(parent_conn.recv())   # prints "Hello"
+
   application = web.Application([(r'/static/(.*)', web.StaticFileHandler, {'path': os.path.dirname(__file__)}),
-                                 (r'/websocket', WebSocketHandler)])
+    (r'/websocket', WebSocketHandler)])
   application.listen(8001)
   ioloop.IOLoop.instance().start()

@@ -1,4 +1,5 @@
 from digi.xbee.devices import XBeeDevice
+from multiprocessing import Process,Pipe
 
 # The client is our groundstation laptop
 #
@@ -18,7 +19,12 @@ xbee.open()
 def my_data_received_callback(xbee_message):
     address = xbee_message.remote_device.get_64bit_addr()
     data = xbee_message.data.decode("utf8")
-    print("Received data from %s: %s" % (address, data))
+    send_to_web("Received data from %s: %s" % (address, data))
+
+def send_to_web(child_conn, message):
+    child_conn.send(message)
+    child_conn.close()
+
 
 # Add the callback.
 xbee.add_data_received_callback(my_data_received_callback)
