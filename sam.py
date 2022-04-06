@@ -1,49 +1,41 @@
-import time
-import board
-from board import *
-import adafruit_bmp3xx
-import adafruit_sht31d
-import adafruit_gps
 from digi.xbee.devices import XBeeDevice
+import time
+import socket
+import serial
 
-#i2c = busio.I2C(board.SCL, board.SDA)
-def altimeter_barometer(bmp):
-    pressure = bmp.pressure
-    altitude = bmp.altitude
-    return (pressure, altitude) 
-    
-def gps_func(gps):
-    return (gps.latitude, gps.longitude)
+# standard local host
+host = "127.0.0.1"
+# doesn't really matter as long as its not in use by another program and > 1023
+port = 55021
 
-def temp_humidity(sensor):
-    return (sensor.relative_humidity, sensor.temperature)
+comm_port = "COM6"
+baudrate = 57600
+
+
+def open_socket():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    except socket.error as err:
+        print("socket creation failed, for why?")
+    s.bind(host, port)
+    return s
+
+
+def send(data, s):
+    s.send(data)
+
 
 def main():
-    i2c = board.I2C()
-   # gps = adafruit_gps.GPS_GtopI2C(i2c,debug=False)
-   # gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
-   # gps.send_command(b"PMTK220,1000")
-    radio =  XBeeDevice("/dev/ttyAMA0",57600)
-    data = bytearray()
-    bmp = adafruit_bmp3xx.BMP3XX_I2C(i2c)
-    #sht = adafruit_sht31d.SHT31D(i2c)
+    device = serial.Serial(port="COM6", baudrate=baudrate, parity=serial.PARITY_EVEN)
+    sock = open_socket()
+    data = b''
     while True:
-        data.clear()
-        alt_pres = altimeter_barometer(bmp)
-        temp_hum_data = temp_humidity(sht)
-        gps_d = gps_func()
-        t_h = temp_humidity()
-        data.add(bytes(alt_pres[0]))
-        data.add(bytes(alt_pres[1]))
-        """
-        data.add(bytes(gps_d[0]))
-        data.add(bytes(gps_d[1]))
-        data.add(bytes(temp_hum_data[0]))
-        data.add(bytes(temp_hum_data[1]))
-        """
-        #send data to socket program with radio script
-        radio.send_data_broadcast(data)
-        time.sleep(1)
+        if device.inWaiting() > 0:
+            data = device.read(size=device.inWaiting())
+        print(data)
+        print('post data')
+        send(data, sock)
+
 
 if __name__ == "__main__":
     main()
