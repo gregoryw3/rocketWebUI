@@ -1,5 +1,4 @@
 from digi.xbee.devices import XBeeDevice
-from multiprocessing import Process,Pipe
 
 # The client is our groundstation laptop
 #

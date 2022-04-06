@@ -2,13 +2,23 @@ import datetime
 import json
 import os
 import random
+import socket
 import time
 from glob import glob
 from multiprocessing import Pipe, Process, Queue
-from client import send_to_web
 
 from tornado import ioloop, web, websocket
 
+host = "127.0.0.1"
+port = 55021
+
+def open_socket():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    except socket.error as err:
+        print("socket creation failed, for why?")
+    s.bind(host,port)    
+    return s
 
 class WebSocketHandler(websocket.WebSocketHandler):
   # Addition for Tornado as of 2017, need the following method
@@ -26,7 +36,10 @@ class WebSocketHandler(websocket.WebSocketHandler):
     webMessage = jsonMessage.get('run')
     startTime = time.time()
     pastHeight = 0
-    ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=3), self.send_data(startTime, pastHeight, webMessage))
+    if (webMessage):
+      ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=3), self.send_data(startTime, pastHeight, webMessage))
+    else:
+      ioloop.IOLoop.instance().stop()
     
 
  #close connection
@@ -66,16 +79,14 @@ class WebSocketHandler(websocket.WebSocketHandler):
     #create new ioloop instance to intermittently publish data
     ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=1), self.send_data(startTime, pastHeight, webMessage))
 
-if __name__ == "__main__":
-  #create new web app w/ websocket endpoint available at /websocket
+def main():
   print ("Starting websocket server program. Awaiting client requests to open websocket ...")
-
-  parent_conn,child_conn = Pipe()
-  p = Process(target=send_to_web, args=(child_conn,))
-  p.start()
-  print(parent_conn.recv())   # prints "Hello"
-
   application = web.Application([(r'/static/(.*)', web.StaticFileHandler, {'path': os.path.dirname(__file__)}),
     (r'/websocket', WebSocketHandler)])
   application.listen(8001)
   ioloop.IOLoop.instance().start()
+  open_socket()
+
+if __name__ == "__main__":
+    main()
+
