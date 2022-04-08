@@ -6,8 +6,8 @@ var connection = new WebSocket('ws://localhost:8001/websocket')
 
 var currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0,"Latitude": 0,"Longitude": 0}]}';
 
-var Latitude
-var Longitude
+var Latitude = 0
+var Longitude = 0
 
 //Returns if webSocket connection is open
 function isOpen(ws) {
@@ -59,7 +59,7 @@ function stopRecording() {
         run: "false",
         date: Date.now()
     }
-    document.getElementById('googleMaps').innerHTML = 'https://www.google.com/maps/@' + Latitude + ',' + Longitude;
+    createLink();
     if (!isOpen(connection)) {
         console.log("Socket is Closed!")
         document.getElementById('websocket-status').innerHTML
@@ -71,6 +71,20 @@ function stopRecording() {
             = 'Socket Status: Open 🟢';
     }
     connection.send(JSON.stringify(msg));
+}
+
+function createLink() {
+    var gpsdiv = document.getElementById("googleMaps");
+    var newLink = document.createElement('a');
+    var linkText = "https://www.google.com/maps/@" + Latitude + ',' + Longitude;
+    newLink.setAttribute('href', linkText);
+    newLink.innerHTML = linkText;
+    if (gpsdiv.childElementCount > 0){
+        gpsdiv.removeChild();
+    }
+    else{
+        gpsdiv.appendChild(newLink);
+    }
 }
 
 //resets chart data by calling the resetData() function and then reinitializes the csv json data to it's

@@ -76,7 +76,6 @@ class WebSocketHandler(websocket.WebSocketHandler):
 
 
 def parse_radio(radio_message):
-    global count
     data = radio_message.decode('utf-8')
     data = data.split(',')
     #sort of spaghetti? kind of not really, but parsing the data recieved from the receiver
@@ -90,7 +89,7 @@ def parse_radio(radio_message):
 
     #count variable a place holder that may stay forever
     point_data = {
-        'Time': count,
+        'Time': gps_time,
         'Height': altitude,
         'AirPressure': pressure,
         'Humidity': humidity,
@@ -98,7 +97,6 @@ def parse_radio(radio_message):
         'Latitude': latitude,
         'Longitude': longitude
     }
-    count += 1
     return point_data
 
 
