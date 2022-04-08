@@ -6,6 +6,9 @@ var connection = new WebSocket('ws://localhost:8001/websocket')
 
 var currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0,"Latitude": 0,"Longitude": 0}]}';
 
+var Latitude
+var Longitude
+
 //Returns if webSocket connection is open
 function isOpen(ws) {
     return ws.readyState === ws.OPEN
@@ -67,6 +70,7 @@ function stopRecording() {
             = 'Socket Status: Open 🟢';
     }
     connection.send(JSON.stringify(msg));
+    document.getElementById('googleMaps').innerHTML = 'https://www.google.com/maps/@' + Latitude + ',' + Longitude;
 }
 
 //resets chart data by calling the resetData() function and then reinitializes the csv json data to it's
@@ -189,6 +193,8 @@ connection.onmessage = function(event) {
     var objCurrentData = JSON.parse(currentData);
     objCurrentData['rocketData'].push({"Time": newData.Time, "Height": newData.Height, "AirPressure": newData.AirPressure, "Humidity": newData.Humidity, "Temperature": newData.Temperature, "Latitude": newData.Latitude, "Longitude": newData.Longitude});
     currentData = JSON.stringify(objCurrentData);
+    Latitude = newData.Latitude
+    Longitude = newData.Longitude
     document.getElementById("lat-gps").innerHTML = newData.Latitude;
     document.getElementById("long-gps").innerHTML = newData.Longitude;
 
