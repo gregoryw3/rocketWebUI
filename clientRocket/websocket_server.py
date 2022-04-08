@@ -84,9 +84,9 @@ def parse_radio(radio_message):
     altitude = int(data[1])
     humidity = int(data[2])
     temperature = int(data[3])
-   # latitude = int(lat_long__time_data[0])
-  #  longitude = int(lat_long__time_data[1])
-   # gps_time = float(lat_long__time_data[2])
+    latitude = int(data[4])
+    longitude = int(data[5])
+    gps_time = float(data[6])
 
     #count variable a place holder that may stay forever
     point_data = {
@@ -94,9 +94,9 @@ def parse_radio(radio_message):
         'Height': altitude,
         'AirPressure': pressure,
         'Humidity': humidity,
-        'Temperature': temperature
-        #'latitude': latitude,
-        #'longitude': longitude
+        'Temperature': temperature,
+        'Latitude': latitude,
+        'Longitude': longitude
     }
     count += 1
     return point_data

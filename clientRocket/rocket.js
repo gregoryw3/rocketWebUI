@@ -4,7 +4,7 @@ var rocketHumidityChart = dc.lineChart("#rocket-humidity-line-chart")
 var rocketTemperatureChart = dc.lineChart("#rocket-temperature-line-chart")
 var connection = new WebSocket('ws://localhost:8001/websocket')
 
-var currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0}]}';
+var currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0,"Latitude": 0,"Longitude": 0}]}';
 
 //Returns if webSocket connection is open
 function isOpen(ws) {
@@ -73,7 +73,7 @@ function stopRecording() {
 //initial state
 function resetRecording() {
     resetData(1, [timeDim, heightDim, airPressureDim, humidityDim, temperatureDim]);
-    currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0}]}';
+    currentData = '{"rocketData":[{"Time": 0,"Height": 0,"AirPressure": 0,"Humidity": 0,"Temperature": 0,"Latitude": 0,"Longitude": 0}]}';
 }
 
 //this is here to make it easier to add more things to this function if needed
@@ -183,12 +183,14 @@ connection.onmessage = function(event) {
         "Height": newData.Height,
         "AirPressure": newData.AirPressure,
         "Humidity": newData.Humidity,
-        "Temperature": newData.Temperature
+        "Temperature": newData.Temperature,
     }]
 
     var objCurrentData = JSON.parse(currentData);
-    objCurrentData['rocketData'].push({"Time": newData.Time, "Height": newData.Height, "AirPressure": newData.AirPressure, "Humidity": newData.Humidity, "Temperature": newData.Temperature});
+    objCurrentData['rocketData'].push({"Time": newData.Time, "Height": newData.Height, "AirPressure": newData.AirPressure, "Humidity": newData.Humidity, "Temperature": newData.Temperature, "Latitude": newData.Latitude, "Longitude": newData.Longitude});
     currentData = JSON.stringify(objCurrentData);
+    document.getElementById("lat-gps").innerHTML = newData.Latitude;
+    document.getElementById("long-gps").innerHTML = newData.Longitude;
 
     //resetData(1, [timeDim, heightDim, airPressureDim, humidityDim, temperatureDim]);
     xfilter.add(updateObject);

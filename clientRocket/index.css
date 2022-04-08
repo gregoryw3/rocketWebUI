@@ -69,3 +69,21 @@
         align-items:center;
         justify-content:center;
         }
+.gps{
+    height: 100%; 
+    width:100%; 
+    font-size: 0;
+}
+#lat-gps-head, #long-gps-head {
+    display: inline-block; 
+    *display: inline; 
+    zoom: 1; 
+    vertical-align: top; 
+    font-size: 12px;
+}
+#lat-gps-head {
+    width: 50%; 
+}
+#long-gps-head {
+    width: 50%; 
+}
