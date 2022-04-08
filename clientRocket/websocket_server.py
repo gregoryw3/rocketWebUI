@@ -7,16 +7,22 @@ import time
 
 from tornado import ioloop, web, websocket
 
-host = "127.0.0.1"
+host = socket.gethostname()
 port = 55021
 
+global count 
+count = 0
+
 try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s = socket.socket()
 except socket.error as err:
     print("socket creation failed, for why?")
-    s.bind(host, port)
+s.bind((host, port))
+s.listen(1)
+cli_sock, address= s.accept()
 
 
+print("yes")
 class WebSocketHandler(websocket.WebSocketHandler):
     # Addition for Tornado as of 2017, need the following method
     # per: http://stackoverflow.com/questions/24851207/tornado-403-get-warning-when-opening-websocket/25071488#25071488
@@ -36,7 +42,7 @@ class WebSocketHandler(websocket.WebSocketHandler):
         past_height = 0
         if web_message:
             ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=3),
-                                                 self.send_data(start_time, past_height, web_message))
+                                                 self.send_data(start_time, web_message))
         else:
             ioloop.IOLoop.instance().stop()
 
@@ -52,13 +58,12 @@ class WebSocketHandler(websocket.WebSocketHandler):
         print("Sending Data")
 
         # create a bunch of random data for various dimensions we want
-        current_height = random.randrange(1, 300)
-
-        radio_message = s.recv()
+        #dont need this anymore
+        radio_message = cli_sock.recv(1024)
         radio_message = parse_radio(radio_message)
-
+        
         print(radio_message)
-
+        web_message=radio_message
         # write the json object to the socket
         if web_message:
             self.write_message(json.dumps(radio_message))
@@ -71,34 +76,34 @@ class WebSocketHandler(websocket.WebSocketHandler):
 
 
 def parse_radio(radio_message):
+    global count
     data = radio_message.decode('utf-8')
-    data = data.split(';')
-    pr_alt_data = data[0].split(',')
-    t_h_data = data[1].split(',')
-    lat_long__time_data = data[2].split(',')
+    data = data.split(',')
+    #sort of spaghetti? kind of not really, but parsing the data recieved from the receiver
+    pressure = int(data[0])
+    altitude = int(data[1])
+    humidity = int(data[2])
+    temperature = int(data[3])
+   # latitude = int(lat_long__time_data[0])
+  #  longitude = int(lat_long__time_data[1])
+   # gps_time = float(lat_long__time_data[2])
 
-    pressure = int(pr_alt_data[0])
-    altitude = int(pr_alt_data[1])
-    humidity = int(t_h_data[1])
-    temperature = int(t_h_data[0])
-    latitude = int(lat_long__time_data[0])
-    longitude = int(lat_long__time_data[1])
-    gps_time = float(lat_long__time_data[2])
-
+    #count variable a place holder that may stay forever
     point_data = {
-        'Time': gps_time,
+        'Time': count,
         'Height': altitude,
         'AirPressure': pressure,
         'Humidity': humidity,
-        'Temperature': temperature,
-        'latitude': latitude,
-        'longitude': longitude
+        'Temperature': temperature
+        #'latitude': latitude,
+        #'longitude': longitude
     }
-
+    count += 1
     return point_data
 
 
 def main():
+    global count
     print("Starting websocket server program. Awaiting client requests to open websocket ...")
     application = web.Application([(r'/static/(.*)', web.StaticFileHandler, {'path': os.path.dirname(__file__)}),
                                    (r'/websocket', WebSocketHandler)])
