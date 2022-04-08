@@ -59,6 +59,7 @@ function stopRecording() {
         run: "false",
         date: Date.now()
     }
+    document.getElementById('googleMaps').innerHTML = 'https://www.google.com/maps/@' + Latitude + ',' + Longitude;
     if (!isOpen(connection)) {
         console.log("Socket is Closed!")
         document.getElementById('websocket-status').innerHTML
@@ -70,7 +71,6 @@ function stopRecording() {
             = 'Socket Status: Open 🟢';
     }
     connection.send(JSON.stringify(msg));
-    document.getElementById('googleMaps').innerHTML = 'https://www.google.com/maps/@' + Latitude + ',' + Longitude;
 }
 
 //resets chart data by calling the resetData() function and then reinitializes the csv json data to it's
