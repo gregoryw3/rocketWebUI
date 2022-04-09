@@ -1,7 +1,6 @@
 import datetime
 import json
 import os
-import random
 import socket
 import time
 
@@ -39,7 +38,6 @@ class WebSocketHandler(websocket.WebSocketHandler):
         print(json_message)
         web_message = json_message.get('run')
         start_time = time.time()
-        past_height = 0
         if web_message:
             ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=3),
                                                  self.send_data(start_time, web_message))

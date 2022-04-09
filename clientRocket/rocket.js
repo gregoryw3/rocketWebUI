@@ -76,11 +76,11 @@ function stopRecording() {
 function createLink() {
     var gpsdiv = document.getElementById("googleMaps");
     var newLink = document.createElement('a');
-    var linkText = "https://www.google.com/maps/@" + Latitude + ',' + Longitude;
+    var linkText = "https://www.google.com/maps/@" + Latitude + ',' + Longitude + ',15z';
     newLink.setAttribute('href', linkText);
     newLink.innerHTML = linkText;
     if (gpsdiv.childElementCount > 0){
-        gpsdiv.removeChild();
+        gpsdiv.removeChild(newLink);
     }
     else{
         gpsdiv.appendChild(newLink);
