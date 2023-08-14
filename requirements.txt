@@ -11,4 +11,4 @@ pyserial == 3.5
 smbus == 1.1.post2
 
 # C:\Users\gregw\Downloads\rocketWebUI\rocketChartWebServer\websocket_server.py: 8
-tornado == 6.3.2
+tornado == 6.3.3
